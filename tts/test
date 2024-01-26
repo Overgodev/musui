@@ -1,0 +1,44 @@
+import numpy as np
+import soundfile as sf
+import pyttsx3
+
+# Input text
+text = "this is a Pad ka pao"
+
+# Create a phonetic dictionary (simple mapping)
+phonetic_dict = {
+    "Hello": ["HH", "AH", "L", "OW"],
+    "how": ["HH", "AW"],
+    "are": ["AA", "R"],
+    "you": ["Y", "UW"],
+    "doing": ["D", "UW", "IH", "NG"],
+    "today": ["T", "UW", "D", "EY"],
+    "this": ["T", "H", "IS"],
+    "is": ["I", "S"],
+    "a": ["A"],
+    "Pad": ["PAD"],
+    "Ka": ["KA"],
+    "pao": ["PAO"],
+}
+
+# Generate speech waveform
+waveform = []
+for word in text.split():
+    phonemes = phonetic_dict.get(word.lower(), [])  # Get phonemes for the word
+    for phoneme in phonemes:
+        # Generate a basic waveform for each phoneme (sine wave)
+        duration = 0.5  # Duration of each phoneme (in seconds)
+        sample_rate = 44100  # Audio sample rate (standard for CD quality)
+        t = np.linspace(0, duration, int(sample_rate * duration), endpoint=False)
+        audio_data = np.sin(2 * np.pi * 440 * t)  # Generate a 440Hz sine wave as a placeholder
+        waveform.extend(audio_data)
+
+# Save the waveform as an audio file
+sf.write("output.wav", waveform, sample_rate)
+
+# Play the audio file (using pyttsx3)
+engine = pyttsx3.init()
+engine.setProperty("rate", 150)  # Adjust the speech rate
+engine.say(text)
+engine.save_to_file(text, "output_pytt.wav")
+engine.runAndWait()
